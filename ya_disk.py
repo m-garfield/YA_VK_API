@@ -1,4 +1,5 @@
 import logging
+from pprint import pprint
 
 import requests as req
 from progress.bar import IncrementalBar
@@ -16,7 +17,7 @@ class Yandex_disk:
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': f'OAuth y0_AgAAAABu-ZBmAADLWwAAAADmfU-DRavVgx5jROWnLeJLM--uIfd-Ic0'
+        'Authorization': 'OAuth y0_AgAAAABu-ZBmAADLWwAAAADmfU-DRavVgx5jROWnLeJLM--uIfd-Ic0'
     }
     # создание папки с именем  name_folder
     def upload_file(self):
@@ -24,12 +25,12 @@ class Yandex_disk:
         bar = IncrementalBar("Загружаем фотографии на диск", max=len(self.list_photos))
         for photo in self.list_photos:
             bar.next()
-            name_file = photo['name'] # Имя файла
-            href_file = photo['href'] #Путь к файлу
-            path_for_upload = req.get(f'{self.URL}resources/upload?path={self.name_folder}/photo_with_like_{name_file}.jpg', headers=self.headers).json()
+            name_file = photo['name']                     # Имя файла
+            href_file = photo['href']                     #Путь к файлу
+            #path_for_upload = req.get(f'{self.URL}resources/upload?path={self.name_folder}/photo_with_like_{name_file}.jpg', headers=self.headers).json()
             # upload_file = req.post(path_for_upload['href'])
-            result = req.post(f'{self.URL}resources/upload?url={href_file}&path={self.name_folder}/{name_file}.jpg', headers=self.headers).json()
-
-
+            result = req.post(f'{self.URL}resources/upload?url={href_file}&path={self.name_folder}/photo_with_like_{name_file}.jpg', headers=self.headers).json()
+            check_result = req.get(result['href'], headers=self.headers)
+            print(check_result.json())
         bar.finish()
 
